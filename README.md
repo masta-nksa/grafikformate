@@ -20,7 +20,7 @@ Breite (1 Byte) | Höhe (1 Byte) | Farbtiefe (1 Byte) | Breite × Höhe × Farbt
 
 Funktionen:
 
-- **Header** einstellen (Breite, Höhe, Farbtiefe 1–24 Bit), jeweils mit Binärdarstellung des Bytes. Wahlweise steht der Header als erste 3 Bytes im Bitstrom (wie in den späteren code.org-Levels).
+- **Header** einstellen (Breite, Höhe, Farbtiefe 1–24 Bit), jeweils mit Binärdarstellung des Bytes. Standardmässig steht der Header als erste 3 Bytes im Bitstrom (wie in den späteren code.org-Levels); das lässt sich abschalten.
 - **Bits binär oder hexadezimal** eingeben. Leerzeichen und Zeilenumbrüche werden ignoriert, ungültige Zeichen gemeldet. Fehlende Bits werden als schraffierte Pixel gezeigt, überzählige Bits markiert.
 - **Farbmodelle:** Graustufen, RGB (Bits werden auf R, G, B verteilt, der Rest geht an Grün, dann an Rot), Farbpalette (indiziert wie bei GIF, bis 8 Bit). «Automatisch» bedeutet 1–2 Bit Graustufen, ab 3 Bit RGB. Bei 1 Bit gilt 0 = schwarz, 1 = weiss (wie in den Folien).
 - **Untersuchen:** Beim Überfahren eines Pixels erscheinen die Bit-Position, die Kanalwerte und der Farbcode. Die **Zuordnung** zeigt für jedes Pixel seine Bits und seine Farbe.
@@ -55,7 +55,7 @@ Link-Parameter (im Teil nach `#`):
 |---|---|
 | `w`, `h`, `b` | Breite, Höhe, Farbtiefe |
 | `m` | Farbmodell: `gray`, `rgb`, `palette` (sonst automatisch) |
-| `hdr=1` | Header im Bitstrom |
+| `hdr=0` | Header nicht in den Bitstrom schreiben (Standard: Header steht im Bitstrom) |
 | `v=hex` | Hex-Ansicht |
 | `lbl=1` | Bits im Pixel anzeigen |
 | `n`, `d` | Anzahl Bits und Pixeldaten (Base64url) |

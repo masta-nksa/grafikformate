@@ -107,7 +107,7 @@
           'b) Vermutlich unterscheiden sich Ihre Farben nicht allzu sehr von denen Ihres Nebensitzers. Können Sie das erklären?',
       } } },
     { group: 'Aufgaben (Arbeitsblatt «Rastergrafik manuell»)', id: 'a5', label: 'A5 – Bitfolge mit Header entschlüsseln',
-      cfg: { w: 3, h: 3, b: 6, hdr: true, reveal: true,
+      cfg: { w: 3, h: 3, b: 6, reveal: true,
         bits: '110000111111110000111111111111111111110000111111110000', task: {
           title: 'Aufgabe 5 – Zeichnen Sie …',
           text: 'Diese Bitfolge enthält am Anfang einen **Header**: Breite, Höhe und Farbtiefe sind je 1 Byte lang. Danach folgen die Pixeldaten.\n' +

@@ -60,7 +60,7 @@
 
   // ---------- Zustand ----------
   const state = {
-    w: 4, h: 3, bpp: 3, model: 'auto', bits: '', hdr: false, view: 'bin',
+    w: 4, h: 3, bpp: 3, model: 'auto', bits: '', hdr: true, view: 'bin',
     palette: defaultPalette(), grid: true, labels: false, tool: 'inspect',
     drawColor: '#ff0000', task: null, lock: new Set(), hidden: false,
     bad: new Set(), hover: -1,
@@ -709,7 +709,7 @@
     state.bpp = clamp(parseInt(cfg.b, 10) || 1, 1, MAX_BPP);
     state.model = ['auto', 'gray', 'rgb', 'palette'].includes(cfg.model) ? cfg.model : 'auto';
     state.bits = String(cfg.bits || '').replace(/[^01]/g, '');
-    state.hdr = !!cfg.hdr;
+    state.hdr = cfg.hdr !== false; // Standard: Header im Bitstrom
     state.view = cfg.view === 'hex' ? 'hex' : 'bin';
     state.labels = !!cfg.labels;
     state.grid = cfg.grid !== false;
@@ -750,7 +750,7 @@
     if (!p.has('w')) return null;
     const cfg = {
       w: p.get('w'), h: p.get('h'), b: p.get('b'), model: p.get('m') || 'auto',
-      hdr: p.get('hdr') === '1', view: p.get('v'), labels: p.get('lbl') === '1',
+      hdr: p.get('hdr') !== '0', view: p.get('v'), labels: p.get('lbl') === '1',
       bits: p.has('d') ? b64ToBits(p.get('d'), parseInt(p.get('n'), 10)) : '',
       reveal: p.get('r') === '1', lock: (p.get('lock') || '').split(',').filter(Boolean),
       palette: (p.get('pal') || '').match(/[0-9a-fA-F]{6}/g) || undefined,
@@ -783,7 +783,7 @@
     const p = new URLSearchParams();
     p.set('w', state.w); p.set('h', state.h); p.set('b', state.bpp);
     if (state.model !== 'auto') p.set('m', state.model);
-    if (state.hdr) p.set('hdr', '1');
+    if (!state.hdr) p.set('hdr', '0');
     if (state.view === 'hex') p.set('v', 'hex');
     if (state.labels) p.set('lbl', '1');
     const bits = el.shEmpty.checked ? '' : state.bits;
