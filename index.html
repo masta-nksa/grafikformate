@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grafikformate</title>
+<meta name="description" content="Lernmaterial zu Raster- und Vektorgrafik: unplugged, interaktive Werkzeuge und Online-Checks.">
+<style>
+  :root { --bg:#f4f5f7; --card:#fff; --ink:#1d232b; --muted:#5e6875; --line:#d9dde3; --accent:#2459c9; color-scheme: light; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#14171c; --card:#1d2229; --ink:#e7eaee; --muted:#9aa4b1; --line:#333b45; --accent:#6c9cff; color-scheme: dark; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 60rem; margin: 0 auto; padding: 2rem 1rem 3rem; }
+  h1 { margin: 0 0 .3rem; font-size: 1.8rem; }
+  .lead { color: var(--muted); margin: 0 0 2rem; }
+  .stages { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1rem; }
+  .stage { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 1.1rem 1.2rem; }
+  .stage h2 { margin: 0 0 .2rem; font-size: 1.1rem; }
+  .stage .kicker { font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+  .stage p { margin: .4rem 0 .8rem; color: var(--muted); font-size: .95rem; }
+  ul { list-style: none; padding: 0; margin: 0; }
+  li { padding: .45rem 0; border-top: 1px solid var(--line); }
+  a { color: var(--accent); font-weight: 600; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .soon { color: var(--muted); }
+  .soon::after { content: " · geplant"; font-size: .8rem; }
+  small { display: block; color: var(--muted); font-weight: 400; }
+  footer { color: var(--muted); font-size: .85rem; margin-top: 2rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Grafikformate</h1>
+  <p class="lead">Wie wird aus Bits ein Bild? Rastergrafik und Vektorgrafik, Farbtiefe, Farbräume, Komprimierung und Auflösung – in drei Stufen.</p>
+
+  <div class="stages">
+    <section class="stage">
+      <div class="kicker">Stufe 1</div>
+      <h2>Unplugged</h2>
+      <p>Dossier ohne Computer: Bits von Hand in Pixel übersetzen, Bilder auf Karopapier codieren, Flaggen als Formen beschreiben.</p>
+      <ul>
+        <li class="soon">Dossier «Grafikformate»</li>
+      </ul>
+    </section>
+
+    <section class="stage">
+      <div class="kicker">Stufe 2</div>
+      <h2>Am Computer erleben</h2>
+      <p>Interaktive Werkzeuge, mit denen sich die Sachverhalte ausprobieren lassen.</p>
+      <ul>
+        <li><a href="pixel/">Pixel-Labor</a><small>Rastergrafik aus Bits: Header, Farbtiefe, RGB, Hex, Farbpalette, Speicherbedarf</small></li>
+        <li class="soon">SVG-Labor<small>Vektorgrafik als Text: Rätsel.svg, Flaggen codieren</small></li>
+        <li class="soon">Komprimierungs-Labor<small>JPG und GIF im Vergleich, Artefakte</small></li>
+        <li class="soon">Auflösungsrechner<small>Pixel, dpi und Druckgrösse</small></li>
+      </ul>
+    </section>
+
+    <section class="stage">
+      <div class="kicker">Stufe 3</div>
+      <h2>Verständnis prüfen</h2>
+      <p>Kurze Online-Checks mit direkter Rückmeldung.</p>
+      <ul>
+        <li class="soon">Check Rastergrafik</li>
+        <li class="soon">Check Vektorgrafik</li>
+        <li class="soon">Check Formatentscheidungen</li>
+      </ul>
+    </section>
+  </div>
+
+  <footer>Alle Werkzeuge laufen vollständig im Browser, ohne Anmeldung und ohne Datenübertragung.</footer>
+</main>
+</body>
+</html>

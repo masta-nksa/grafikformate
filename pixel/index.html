@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pixel-Labor</title>
+<meta name="description" content="Rastergrafiken aus Bits erzeugen und untersuchen: Breite, Höhe, Farbtiefe, RGB, Hexadezimal, Farbpalette und Speicherbedarf.">
+<link rel="stylesheet" href="pixel.css">
+</head>
+<body>
+
+<header class="topbar">
+  <a class="home" href="../" title="Zur Übersicht">←</a>
+  <h1>Pixel-Labor <span>Rastergrafiken aus Bits</span></h1>
+  <div class="top-actions">
+    <label class="visually-hidden" for="preset">Beispiel oder Aufgabe laden</label>
+    <select id="preset"></select>
+    <button id="btn-help" type="button">Hilfe</button>
+    <button id="btn-share" type="button">Link teilen</button>
+    <button id="btn-png" type="button">PNG speichern</button>
+  </div>
+</header>
+
+<section id="task" class="task" hidden>
+  <div class="task-text">
+    <h2 id="task-title"></h2>
+    <div id="task-body"></div>
+  </div>
+  <div class="task-target" id="task-target-wrap" hidden>
+    <div class="mini-label">Zielbild</div>
+    <canvas id="target-canvas"></canvas>
+    <div id="task-check" class="check"></div>
+  </div>
+  <button class="icon-btn task-close" id="task-close" type="button" title="Aufgabe schliessen">×</button>
+</section>
+
+<main class="layout">
+  <!-- linke Spalte: Datei-Inhalt -->
+  <div class="col">
+    <section class="card">
+      <h2>Header <small>Angaben zum Bild – je 1 Byte</small></h2>
+      <div class="hdr-grid">
+        <label for="in-w">Breite</label>
+        <div class="stepper" data-for="in-w">
+          <button type="button" data-step="-1" aria-label="Breite verkleinern">−</button>
+          <input id="in-w" type="number" min="1" max="255" inputmode="numeric">
+          <button type="button" data-step="1" aria-label="Breite vergrössern">+</button>
+        </div>
+        <code class="byte" id="byte-w"></code>
+
+        <label for="in-h">Höhe</label>
+        <div class="stepper" data-for="in-h">
+          <button type="button" data-step="-1" aria-label="Höhe verkleinern">−</button>
+          <input id="in-h" type="number" min="1" max="255" inputmode="numeric">
+          <button type="button" data-step="1" aria-label="Höhe vergrössern">+</button>
+        </div>
+        <code class="byte" id="byte-h"></code>
+
+        <label for="in-b">Farbtiefe</label>
+        <div class="stepper" data-for="in-b">
+          <button type="button" data-step="-1" aria-label="Farbtiefe verkleinern">−</button>
+          <input id="in-b" type="number" min="1" max="24" inputmode="numeric">
+          <button type="button" data-step="1" aria-label="Farbtiefe vergrössern">+</button>
+        </div>
+        <code class="byte" id="byte-b"></code>
+      </div>
+      <input id="rng-b" class="bpp-range" type="range" min="1" max="24" aria-label="Farbtiefe (Bit pro Pixel)">
+      <div class="row">
+        <label for="sel-model">Farbmodell</label>
+        <select id="sel-model">
+          <option value="auto">Automatisch</option>
+          <option value="gray">Graustufen</option>
+          <option value="rgb">RGB</option>
+          <option value="palette">Farbpalette (indiziert)</option>
+        </select>
+      </div>
+      <p class="hint" id="model-info"></p>
+      <label class="switch">
+        <input type="checkbox" id="chk-header">
+        <span>Header als erste 3 Bytes in den Bitstrom schreiben</span>
+      </label>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>Pixeldaten</h2>
+        <div class="seg" role="radiogroup" aria-label="Darstellung" id="seg-view">
+          <button type="button" role="radio" data-view="bin">Binär</button>
+          <button type="button" role="radio" data-view="hex">Hex</button>
+        </div>
+      </div>
+      <textarea id="bits" wrap="off" spellcheck="false" autocomplete="off" autocapitalize="off" rows="8" aria-label="Bitfolge"></textarea>
+      <div class="status" id="bits-status"></div>
+      <div class="btn-row">
+        <button type="button" id="btn-format" title="Bits nach Pixeln und Zeilen gruppieren">Ordnen</button>
+        <button type="button" id="btn-zero" title="Alle Pixel auf 0 setzen">Alles 0</button>
+        <button type="button" id="btn-random" title="Zufällige Bits erzeugen">Zufall</button>
+        <button type="button" id="btn-text" title="Text in ASCII-Bits umwandeln">Text → Bits</button>
+      </div>
+    </section>
+
+    <details class="card" id="card-map" open>
+      <summary><h2>Zuordnung <small>welche Bits gehören zu welchem Pixel?</small></h2></summary>
+      <div id="bitmap" class="bitmap"></div>
+    </details>
+  </div>
+
+  <!-- rechte Spalte: Bild -->
+  <div class="col">
+    <section class="card" id="card-image">
+      <div class="card-head">
+        <h2>Bild</h2>
+        <div class="seg" role="radiogroup" aria-label="Werkzeug" id="seg-tool">
+          <button type="button" role="radio" data-tool="inspect">Untersuchen</button>
+          <button type="button" role="radio" data-tool="draw">Zeichnen</button>
+        </div>
+      </div>
+      <div class="canvas-wrap" id="canvas-wrap">
+        <canvas id="canvas"></canvas>
+        <div class="cover" id="cover" hidden>
+          <p><strong>Bild verdeckt.</strong><br>Entschlüsseln Sie die Bits zuerst von Hand.</p>
+          <button type="button" id="btn-reveal" class="primary">Bild aufdecken</button>
+        </div>
+      </div>
+      <div class="info" id="hover-info" aria-live="polite"></div>
+      <div class="btn-row options">
+        <label class="switch small"><input type="checkbox" id="chk-grid" checked><span>Raster</span></label>
+        <label class="switch small"><input type="checkbox" id="chk-labels"><span>Bits im Pixel</span></label>
+      </div>
+      <div id="draw-panel" class="draw-panel" hidden>
+        <div class="row">
+          <label for="draw-color">Farbe</label>
+          <input type="color" id="draw-color" value="#ff0000">
+          <span class="swatch big" id="draw-quant"></span>
+          <code id="draw-bits"></code>
+        </div>
+        <div class="swatches" id="swatches"></div>
+      </div>
+    </section>
+
+    <section class="card" id="card-palette" hidden>
+      <h2>Farbtabelle <small>Index → Farbe</small></h2>
+      <div class="palette" id="palette"></div>
+      <div class="btn-row"><button type="button" id="btn-pal-reset">Standardfarben</button></div>
+    </section>
+
+    <details class="card" id="card-analysis" open>
+      <summary><h2>Speicherbedarf <small>und Komprimierung</small></h2></summary>
+      <div id="analysis"></div>
+    </details>
+  </div>
+</main>
+
+<footer class="foot">
+  Pixel-Labor · Format angelehnt an das Pixelation-Widget von code.org · läuft vollständig im Browser, es werden keine Daten übertragen.
+</footer>
+
+<!-- Dialoge -->
+<dialog id="dlg-help" class="dlg">
+  <form method="dialog"><button class="icon-btn dlg-close" aria-label="Schliessen">×</button></form>
+  <h2>So funktioniert das Pixel-Labor</h2>
+  <div class="fmt">
+    <div class="fmt-cell h">Breite<br><small>1 Byte</small></div>
+    <div class="fmt-cell h">Höhe<br><small>1 Byte</small></div>
+    <div class="fmt-cell h">Farbtiefe<br><small>1 Byte</small></div>
+    <div class="fmt-cell d">Pixeldaten<br><small>Breite × Höhe × Farbtiefe Bits</small></div>
+  </div>
+  <p>Eine Rastergrafik ist nur eine lange Folge von Bits. Der kurze <b>Header</b> sagt, wie die Bits zu lesen sind: wie breit und hoch das Bild ist und wie viele Bits zu einem Pixel gehören (<b>Farbtiefe</b>). Danach folgen die Pixel – von links oben nach rechts unten, Zeile für Zeile, so wie man liest.</p>
+  <h3>Farbmodelle</h3>
+  <ul>
+    <li><b>Graustufen:</b> Der Wert eines Pixels ist seine Helligkeit. Bei 1 Bit gilt 0 = schwarz, 1 = weiss.</li>
+    <li><b>RGB:</b> Die Bits eines Pixels werden auf Rot, Grün und Blau verteilt (z.B. 3 Bit: <code>R G B</code>, 24 Bit: 8 Bit pro Kanal). Ist die Farbtiefe nicht durch 3 teilbar, erhält Grün (und dann Rot) ein Bit mehr.</li>
+    <li><b>Automatisch:</b> 1–2 Bit Graustufen, ab 3 Bit RGB.</li>
+    <li><b>Farbpalette:</b> Das Pixel speichert nur die Nummer (den Index) einer Farbe in einer Tabelle – so macht es das GIF-Format.</li>
+  </ul>
+  <h3>Bedienung</h3>
+  <ul>
+    <li>Bits können direkt eingetippt oder eingefügt werden. Leerzeichen und Zeilenumbrüche werden ignoriert.</li>
+    <li>In der <b>Hex</b>-Ansicht steht jede Ziffer für 4 Bits (<code>F</code> = <code>1111</code>).</li>
+    <li>Fahren Sie über ein Pixel, um seine Bits und Farbwerte zu sehen. Mit <b>Zeichnen</b> lassen sich Pixel einfärben – die Bits ändern sich mit.</li>
+    <li>Schraffierte Pixel haben (noch) keine Daten: Es fehlen Bits.</li>
+    <li><b>Link teilen</b> speichert das aktuelle Bild in einem Link. Lehrpersonen können daraus eine Aufgabe mit Zielbild machen.</li>
+  </ul>
+</dialog>
+
+<dialog id="dlg-text" class="dlg">
+  <form method="dialog"><button class="icon-btn dlg-close" aria-label="Schliessen">×</button></form>
+  <h2>Text → Bits</h2>
+  <p>Jedes Zeichen wird mit seinem ASCII-Code (8 Bit) gespeichert. Umlaute benötigen in UTF-8 zwei Bytes.</p>
+  <input type="text" id="text-in" placeholder="z.B. Ihr Vorname" autocomplete="off">
+  <div class="ascii" id="text-table"></div>
+  <div class="btn-row">
+    <button type="button" id="btn-text-replace" class="primary">Bits übernehmen</button>
+    <button type="button" id="btn-text-append">Anhängen</button>
+  </div>
+</dialog>
+
+<dialog id="dlg-share" class="dlg wide">
+  <form method="dialog"><button class="icon-btn dlg-close" aria-label="Schliessen">×</button></form>
+  <h2>Link teilen</h2>
+  <p>Der Link enthält das ganze Bild. Wer ihn öffnet, sieht genau diesen Zustand.</p>
+  <label class="switch"><input type="checkbox" id="sh-reveal"><span>Rätsel: Bild zuerst verdecken (nur die Bits sind sichtbar)</span></label>
+  <details id="sh-task-box">
+    <summary>Als Aufgabe einrichten (für Lehrpersonen)</summary>
+    <div class="share-grid">
+      <label for="sh-title">Titel</label>
+      <input type="text" id="sh-title" placeholder="z.B. Flagge codieren">
+      <label for="sh-text">Aufgabentext</label>
+      <textarea id="sh-text" rows="4" placeholder="Zeilenumbrüche bleiben erhalten. **fett** ist möglich."></textarea>
+    </div>
+    <label class="switch"><input type="checkbox" id="sh-target"><span>Aktuelles Bild als <b>Zielbild</b> verwenden (Lösung wird automatisch geprüft)</span></label>
+    <label class="switch"><input type="checkbox" id="sh-empty"><span>Ohne Pixeldaten starten (Lernende tragen die Bits selbst ein)</span></label>
+    <fieldset>
+      <legend>Für Lernende sperren</legend>
+      <label class="switch small"><input type="checkbox" data-lock="size"><span>Breite/Höhe</span></label>
+      <label class="switch small"><input type="checkbox" data-lock="bpp"><span>Farbtiefe</span></label>
+      <label class="switch small"><input type="checkbox" data-lock="model"><span>Farbmodell</span></label>
+      <label class="switch small"><input type="checkbox" data-lock="header"><span>Header-Option</span></label>
+      <label class="switch small"><input type="checkbox" data-lock="view"><span>Binär/Hex-Umschaltung</span></label>
+      <label class="switch small"><input type="checkbox" data-lock="draw"><span>Zeichnen</span></label>
+      <label class="switch small"><input type="checkbox" data-lock="map"><span>Zuordnung</span></label>
+      <label class="switch small"><input type="checkbox" data-lock="analysis"><span>Speicherbedarf</span></label>
+    </fieldset>
+  </details>
+  <div class="link-row">
+    <input type="text" id="sh-url" readonly aria-label="Link">
+    <button type="button" id="sh-copy" class="primary">Kopieren</button>
+    <a id="sh-open" href="#" target="_blank" rel="noopener">Öffnen</a>
+  </div>
+  <p class="hint" id="sh-note"></p>
+</dialog>
+
+<script src="presets.js"></script>
+<script src="pixel.js"></script>
+</body>
+</html>
